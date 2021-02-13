@@ -1,6 +1,7 @@
 # Reactivities
 
 ## Setup backend
+
 ```bash
 mkdir Reactivities
 cd Reactivities
@@ -26,6 +27,7 @@ dotnet add reference ../Domain
 ```
 
 ## Setup Entity Framework Core
+
 ```bash
 cd ../Persistence
 nuget install Microsoft.EntityFrameworkCore.Sqlite
@@ -33,10 +35,11 @@ cd ../API
 nuget install Microsoft.EntityFrameworkCore.Design
 
 dotnet tool install --global dotnet-ef
-dotnet ef migrations add InitialCreate -p Persistence -s API 
+dotnet ef migrations add InitialCreate -p Persistence -s API
 ```
 
 ## Setup client app
+
 ```bash
 yarn create react-app client-app --template typescript
 cd client-app
@@ -44,9 +47,10 @@ yarn add axios
 ```
 
 ## Add MediatR
+
 ```bash
 cd Application
-nuget install MediatR.Extensions.Microsoft.DependencyInjection 
+nuget install MediatR.Extensions.Microsoft.DependencyInjection
 ```
 
 ```csharp
@@ -80,4 +84,39 @@ services.AddMediatR(typeof(List.Handler).Assembly);
       // Do logic to retrieve data from database via DataContext
     }
   }
+```
+
+## Add AutoMapper
+
+```bash
+cd Application
+nuget install AutoMapper.Extensions.Microsoft.DependencyInjection
+```
+
+```csharp
+// Startup.cs
+// Inside ConfigureServices method
+services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+```
+
+```csharp
+// MappingProfiles.cs
+public class MappingProfiles : Profile
+  {
+    public MappingProfiles()
+    {
+        CreateMap<Activity, ActivityDto>();
+    }
+  }
+```
+
+```csharp
+public class MyClass {
+  public MyClass(IMapper mapper){
+    _mapper = mapper;
+  }
+
+  // Inside method
+  _mapper.Map(activity, activityDto);
+}
 ```
