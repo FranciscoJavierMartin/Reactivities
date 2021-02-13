@@ -35,3 +35,10 @@ nuget install Microsoft.EntityFrameworkCore.Design
 dotnet tool install --global dotnet-ef
 dotnet ef migrations add InitialCreate -p Persistence -s API 
 ```
+
+## Setup client app
+```
+yarn create react-app client-app --template typescript
+cd client-app
+yarn add axios
+```
