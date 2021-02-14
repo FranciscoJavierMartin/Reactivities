@@ -6,19 +6,21 @@ interface ActivityFormProps {
   selectedActivity: Activity | undefined;
   closeForm: () => void;
   createOrEdit: (activity: Activity) => void;
+  submitting: boolean;
 }
 
 export default function ActivityForm({
   selectedActivity,
   closeForm,
   createOrEdit,
+  submitting,
 }: ActivityFormProps) {
   const initialState: Activity = selectedActivity ?? {
     id: '',
     title: '',
     category: '',
     description: '',
-    date: new Date(),
+    date: '',
     city: '',
     venue: '',
   };
@@ -57,6 +59,7 @@ export default function ActivityForm({
           onChange={handleInputChange}
         />
         <Form.Input
+          type='date'
           placeholder='Date'
           value={activity.date}
           name='date'
