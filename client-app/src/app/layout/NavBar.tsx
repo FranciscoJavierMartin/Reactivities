@@ -1,23 +1,26 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Button, Container, Menu } from 'semantic-ui-react';
-import { useStore } from '../stores/store';
+import {
+  ACTIVITIES_PAGE_ROUTE,
+  CREATE_ACTIVITY_PAGE_ROUTE,
+  HOME_PAGE_ROUTE,
+} from '../constants/routes';
 
-interface NavBarProps {}
-
-export default observer(function NavBar({}: NavBarProps) {
-  const { activityStore } = useStore();
+export default observer(function NavBar() {
   return (
     <Menu inverted fixed='top'>
       <Container>
-        <Menu.Item header>
+        <Menu.Item header as={NavLink} exact to={HOME_PAGE_ROUTE}>
           <img src='/assets/logo.png' alt='logo' style={{ marginRight: 10 }} />
           Reactivities
         </Menu.Item>
-        <Menu.Item name='Activities' />
+        <Menu.Item name='Activities' as={NavLink} to={ACTIVITIES_PAGE_ROUTE} />
         <Menu.Item>
           <Button
-            onClick={() => activityStore.openForm()}
+            as={NavLink}
+            to={CREATE_ACTIVITY_PAGE_ROUTE}
             positive
             content='Create Activity'
           />
