@@ -1,38 +1,33 @@
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Card, Image, Button } from 'semantic-ui-react';
-import { Activity } from '../../../app/models/activity';
+import { useStore } from '../../../app/stores/store';
 
-interface ActivityDetailsProps {
-  activity: Activity;
-  cancelSelectActivity: () => void;
-  openForm: (id?: string) => void;
-}
+interface ActivityDetailsProps {}
 
-export default function ActivityDetails({
-  activity,
-  cancelSelectActivity,
-  openForm,
-}: ActivityDetailsProps) {
-  return (
+export default observer(function ActivityDetails({}: ActivityDetailsProps) {
+  const { activityStore } = useStore();
+  const { selectedActivity, openForm, cancelSelectedActivity } = activityStore;
+  return selectedActivity ? (
     <Card fluid>
-      <Image src={`/assets/categoryImages/${activity.category}.jpg`} />
+      <Image src={`/assets/categoryImages/${selectedActivity.category}.jpg`} />
       <Card.Content>
-        <Card.Header>{activity.title}</Card.Header>
+        <Card.Header>{selectedActivity.title}</Card.Header>
         <Card.Meta>
-          <span className='date'>{activity.date}</span>
+          <span className='date'>{selectedActivity.date}</span>
         </Card.Meta>
-        <Card.Description>{activity.description}</Card.Description>
+        <Card.Description>{selectedActivity.description}</Card.Description>
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths='2'>
           <Button
-            onClick={() => openForm(activity.id)}
+            onClick={() => openForm(selectedActivity.id)}
             basic
             color='blue'
             content='Edit'
           />
           <Button
-            onClick={cancelSelectActivity}
+            onClick={cancelSelectedActivity}
             basic
             color='grey'
             content='Cancel'
@@ -40,5 +35,5 @@ export default function ActivityDetails({
         </Button.Group>
       </Card.Content>
     </Card>
-  );
-}
+  ) : null;
+});

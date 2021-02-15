@@ -120,3 +120,8 @@ public class MyClass {
   _mapper.Map(activity, activityDto);
 }
 ```
+
+## Setup MobX
+```bash
+yarn add mobx mobx-react-lite
+```
