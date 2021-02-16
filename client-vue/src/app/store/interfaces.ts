@@ -35,6 +35,7 @@ export interface ActivityStateTypes {
 
 export interface ActivityGettersTypes {
   getActivitiesByDate(state: ActivityStateTypes): Activity[];
+  getGroupedActivities(state: ActivityStateTypes): [string, Activity[]][];
   getIsLoadingInitial(state: ActivityStateTypes): boolean;
   getIsLoading(state: ActivityStateTypes): boolean;
   getSelectedActivity(state: ActivityStateTypes): Activity | undefined;
