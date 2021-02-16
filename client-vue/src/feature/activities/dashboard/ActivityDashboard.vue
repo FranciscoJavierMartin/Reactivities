@@ -11,11 +11,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch } from "vue";
-import ActivityList from "./ActivityList.vue";
-import Loading from "../../../app/components/Loading.vue";
-import { useStore } from "../../../app/store";
-import { AllActionTypes } from "../../../app/store/action-types";
+import { computed, defineComponent, watch } from 'vue';
+import ActivityList from './ActivityList.vue';
+import Loading from '../../../app/components/Loading.vue';
+import { useStore } from '../../../app/store';
+import { AllActionTypes } from '../../../app/store/action-types';
 
 export default defineComponent({
   components: {
@@ -28,19 +28,15 @@ export default defineComponent({
       () => store.getters.getIsLoadingInitial
     );
 
-    onMounted(() => {
-      store.dispatch(AllActionTypes.LOAD_ACTIVITIES);
-    });
-    
-    // watch(
-    //   store.getters.getActivitiesByDate,
-    //   () => {
-    //     store.dispatch(AllActionTypes.LOAD_ACTIVITIES);
-    //   },
-    //   {
-    //     immediate: true,
-    //   }
-    // );
+    watch(
+      store.getters.getActivitiesByDate,
+      () => {
+        store.dispatch(AllActionTypes.LOAD_ACTIVITIES);
+      },
+      {
+        immediate: true,
+      }
+    );
 
     return {
       isLoadingInitial,

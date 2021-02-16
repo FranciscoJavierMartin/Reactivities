@@ -11,5 +11,5 @@
     "lib": ["esnext", "dom"],
     "types": ["vite/client"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/app/components/Loading.vue", "src/feature/activities/form/ActivityForm.vue", "src/feature/activities/details/ActivityDetails.vue", "src/feature/activities/dashboard/ActivityList.vue", "src/feature/activities/dashboard/ActivityDashboard.vue"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

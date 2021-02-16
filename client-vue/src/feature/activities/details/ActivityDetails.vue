@@ -1,6 +1,6 @@
 <template>
   <div v-if="!(isLoadingInitial || !activity)" class="ui fluid card">
-    <img :src="`../assets/categoryImages/${activity.category}.jpg`" />
+    <img :src="`../../../assets/categoryImages/${activity.category}.jpg`" />
     <div class="content">
       <div class="header">
         {{ activity.title }}
@@ -27,10 +27,10 @@
 </template>
 
 <script lang="ts">
-import { useStore } from "../../../app/store";
-import { defineComponent, computed, onMounted } from "vue";
-import { AllActionTypes } from "../../../app/store/action-types";
-import { Activity } from "../../../app/models/activity";
+import { defineComponent, computed, onMounted } from 'vue';
+import { useStore } from '../../../app/store';
+import { AllActionTypes } from '../../../app/store/action-types';
+import { Activity } from '../../../app/models/activity';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
@@ -39,10 +39,7 @@ export default defineComponent({
     const route = useRoute();
 
     onMounted(() => {
-      store.dispatch(
-        AllActionTypes.LOAD_ACTIVITY,
-        route.params.id.toString()
-      );
+      store.dispatch(AllActionTypes.LOAD_ACTIVITY, route.params.id.toString());
     });
 
     const activity = computed<Activity | undefined>(() => {

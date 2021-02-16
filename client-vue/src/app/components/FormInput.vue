@@ -13,14 +13,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
     inputType: {
-      type: () => String as () => "text" | "date",
+      type: String as () => 'text' | 'date' | 'password',
       required: false,
-      default: "text",
+      default: 'text',
     },
     placeholder: {
       type: String,
@@ -31,10 +31,14 @@ export default defineComponent({
       required: true,
     },
     modelValue: {
-      type: Object,
+      type: String,
       required: true,
     },
   },
-  // emits: ["inputChange"],
+  emits: {
+    'update:modelValue': (value: string) => {
+      return typeof value !== 'string';
+    },
+  },
 });
 </script>

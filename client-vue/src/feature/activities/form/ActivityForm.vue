@@ -14,14 +14,17 @@
       />
       <FormInput
         placeholder="Date"
-        :inputType="date"
+        inputType="date"
         name="date"
         v-model="activity.date"
       />
       <FormInput placeholder="City" name="city" v-model="activity.city" />
       <FormInput placeholder="Venue" name="venue" v-model="activity.venue" />
-
-      <button type="submit" class="ui positive right floated button">
+      <button
+        type="submit"
+        class="ui positive right floated button"
+        :class="{ loading: isLoading }"
+      >
         Submit
       </button>
       <router-link to="/activities" class="ui right floated button">
@@ -33,14 +36,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { v4 as uuid } from "uuid";
-import Loading from "../../../app/components/Loading.vue";
-import FormInput from "../../../app/components/FormInput.vue";
-import { Activity } from "../../../app/models/activity";
-import { useStore } from "../../../app/store";
-import { AllActionTypes } from "../../../app/store/action-types";
+import { computed, defineComponent, onMounted, reactive } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { v4 as uuid } from 'uuid';
+import Loading from '../../../app/components/Loading.vue';
+import FormInput from '../../../app/components/FormInput.vue';
+import { Activity } from '../../../app/models/activity';
+import { useStore } from '../../../app/store';
+import { AllActionTypes } from '../../../app/store/action-types';
 
 export default defineComponent({
   components: {
@@ -55,21 +58,22 @@ export default defineComponent({
     const isLoadingInitial = computed<boolean>(
       () => store.getters.getIsLoadingInitial
     );
+    const isLoading = computed<boolean>(() => store.getters.getIsLoading);
     let activity = reactive<Activity>({
-      id: "",
-      title: "",
-      category: "",
-      description: "",
-      date: "",
-      city: "",
-      venue: "",
+      id: '',
+      title: '',
+      category: '',
+      description: '',
+      date: '',
+      city: '',
+      venue: '',
     });
 
     const submit = () => {
       console.log(activity.title);
       if (activity.id) {
         store.dispatch(AllActionTypes.UPDATE_ACTIVITY, activity).then(() => {
-          router.push({ name: "ActivityDetails", params: { id: activity.id } });
+          router.push({ name: 'ActivityDetails', params: { id: activity.id } });
         });
       } else {
         let newActivity = {
@@ -78,7 +82,7 @@ export default defineComponent({
         };
         store.dispatch(AllActionTypes.CREATE_ACTIVITY, newActivity).then(() => {
           router.push({
-            name: "ActivityDetails",
+            name: 'ActivityDetails',
             params: { id: newActivity.id },
           });
         });
@@ -111,6 +115,7 @@ export default defineComponent({
 
     return {
       activity,
+      isLoading,
       isLoadingInitial,
       id,
       submit,

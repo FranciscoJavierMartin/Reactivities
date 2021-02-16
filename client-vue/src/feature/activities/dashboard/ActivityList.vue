@@ -40,15 +40,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import { Activity } from "../../../app/models/activity";
-import { useStore } from "../../../app/store";
-import { AllActionTypes } from "../../../app/store/action-types";
+import { computed, defineComponent, ref } from 'vue';
+import { Activity } from '../../../app/models/activity';
+import { useStore } from '../../../app/store';
+import { AllActionTypes } from '../../../app/store/action-types';
 
 export default defineComponent({
   setup() {
     const store = useStore();
-    const target = ref<string>("");
+    const target = ref<string>('');
 
     const activities = computed<Activity[]>(
       () => store.getters.getActivitiesByDate
