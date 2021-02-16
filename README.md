@@ -122,6 +122,50 @@ public class MyClass {
 ```
 
 ## Setup MobX
+
 ```bash
 yarn add mobx mobx-react-lite
+```
+
+## Setup Fluent Validation
+
+```bash
+cd Application
+nuget install FluentValidation.AspNetCore
+```
+
+Create a validator for Models (on the same folder as the commands for Mediator)
+
+```csharp
+public class ActivityValidator : AbstractValidator<Activity>
+{
+  public ActivityValidator()
+  {
+    RuleFor(x => x.Title).NotEmpty();
+    RuleFor(x => x.Description).NotEmpty();
+  }
+}
+```
+
+Create a class inside the Mediator Command and assign the Validator previously created. You can also add other validators.
+
+```csharp
+public class CommandValidator : AbstractValidator<Command>
+{
+  public CommandValidator()
+  {
+    RuleFor(x => x.Activity).SetValidator(new ActivityValidator());
+  }
+}
+```
+
+Add validators to Startup class
+
+```csharp
+// Startup.cs
+// Inside ConfigureServices
+services.AddControllers().AddFluentValidation(config =>
+  {
+    config.RegisterValidatorsFromAssemblyContaining<Create>();
+  });
 ```
