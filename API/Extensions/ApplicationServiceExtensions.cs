@@ -27,7 +27,7 @@ namespace API.Extensions
         {
           policy.AllowAnyMethod()
             .AllowAnyHeader()
-            .WithOrigins("http://localhost:3000");
+            .WithOrigins(new string[2] { "http://localhost:3000", "http://localhost:3001" });
         });
       });
       services.AddMediatR(typeof(List.Handler).Assembly);

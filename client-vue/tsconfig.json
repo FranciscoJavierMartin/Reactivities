@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/app/components/Loading.vue", "src/feature/activities/form/ActivityForm.vue", "src/feature/activities/details/ActivityDetails.vue", "src/feature/activities/dashboard/ActivityList.vue", "src/feature/activities/dashboard/ActivityDashboard.vue"]
+}
