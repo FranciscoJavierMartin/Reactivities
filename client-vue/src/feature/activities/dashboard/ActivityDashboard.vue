@@ -4,7 +4,7 @@
       <ActivityList />
     </div>
     <div class="six wide column">
-      <h2>Activity Filters</h2>
+      <ActivityFilters/>
     </div>
   </div>
   <Loading v-else content="Loading app" />
@@ -13,6 +13,7 @@
 <script lang="ts">
 import { computed, defineComponent, watch } from 'vue';
 import ActivityList from './ActivityList.vue';
+import ActivityFilters from './ActivityFilters.vue';
 import Loading from '../../../app/components/Loading.vue';
 import { useStore } from '../../../app/store';
 import { AllActionTypes } from '../../../app/store/action-types';
@@ -20,6 +21,7 @@ import { AllActionTypes } from '../../../app/store/action-types';
 export default defineComponent({
   components: {
     ActivityList,
+    ActivityFilters,
     Loading,
   },
   setup() {
@@ -29,7 +31,7 @@ export default defineComponent({
     );
 
     watch(
-      store.getters.getActivitiesByDate,
+      store.getters.getGroupedActivities,
       () => {
         store.dispatch(AllActionTypes.LOAD_ACTIVITIES);
       },

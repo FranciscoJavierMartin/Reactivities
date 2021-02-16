@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Header, Item, Segment } from 'semantic-ui-react';
+import { Header } from 'semantic-ui-react';
 import { Activity } from '../../../app/models/activity';
 import { useStore } from '../../../app/stores/store';
 import ActivityListItem from './ActivityListItem';

@@ -7,8 +7,10 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@popperjs/core": "^2.7.0",
     "axios": "^0.21.1",
     "uuid": "^8.3.2",
+    "v-calendar": "^3.0.0-alpha.3",
     "vue": "^3.0.5",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"

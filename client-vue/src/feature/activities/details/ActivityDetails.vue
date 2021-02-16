@@ -1,39 +1,37 @@
 <template>
-  <div v-if="!(isLoadingInitial || !activity)" class="ui fluid card">
-    <img :src="`../../../assets/categoryImages/${activity.category}.jpg`" />
-    <div class="content">
-      <div class="header">
-        {{ activity.title }}
-      </div>
-      <div class="meta">
-        <span class="date">{{ activity.date }}</span>
-      </div>
-      <div class="description">
-        {{ activity.description }}
-      </div>
+  <div v-if="!(isLoadingInitial || !activity)" class="ui grid">
+    <div class="ui ten wide column">
+      <ActivityDetailedHeader :activity="activity" />
+      <ActivityDetailedInfo :activity="activity" />
+      <ActivityDetailedChat />
     </div>
-    <div class="extra content">
-      <div class="ui two buttons">
-        <router-link
-          :to="`/manage/${activity.id}`"
-          class="ui blue basic button"
-        >
-          Edit
-        </router-link>
-        <button class="ui grey basic button">Cancel</button>
-      </div>
+    <div class="ui six wide column">
+      <ActivityDetailedSidebar />
     </div>
   </div>
+  <Loading v-else content="Loading activity" />
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
+import ActivityDetailedHeader from './ActivityDetailedHeader.vue';
+import ActivityDetailedInfo from './ActivityDetailedInfo.vue';
+import ActivityDetailedChat from './ActivityDetailedChat.vue';
+import ActivityDetailedSidebar from './ActivityDetailedSidebar.vue';
+import Loading from '../../../app/components/Loading.vue';
 import { useStore } from '../../../app/store';
 import { AllActionTypes } from '../../../app/store/action-types';
 import { Activity } from '../../../app/models/activity';
 import { useRoute } from 'vue-router';
 
 export default defineComponent({
+  components: {
+    Loading,
+    ActivityDetailedHeader,
+    ActivityDetailedInfo,
+    ActivityDetailedChat,
+    ActivityDetailedSidebar,
+  },
   setup() {
     const store = useStore();
     const route = useRoute();

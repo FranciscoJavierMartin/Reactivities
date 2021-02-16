@@ -1,9 +1,12 @@
-import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { Card, Image, Button } from 'semantic-ui-react';
-import { getManageActivityRoute } from '../../../app/constants/routes';
+import { observer } from 'mobx-react-lite';
+import { useParams } from 'react-router-dom';
+import { Grid } from 'semantic-ui-react';
 import { useStore } from '../../../app/stores/store';
+import ActivityDetailedChat from './ActivityDetailedChat';
+import ActivityDetailedHeader from './ActivityDetailedHeader';
+import ActivityDetailedInfo from './ActivityDetailedInfo';
+import ActivityDetailedSidebar from './ActivityDetailedSidebar';
 
 export default observer(function ActivityDetails() {
   const { activityStore } = useStore();
@@ -17,27 +20,15 @@ export default observer(function ActivityDetails() {
   }, [id, loadActivity]);
 
   return isLoadingInitial || !selectedActivity ? null : (
-    <Card fluid>
-      <Image src={`/assets/categoryImages/${selectedActivity.category}.jpg`} />
-      <Card.Content>
-        <Card.Header>{selectedActivity.title}</Card.Header>
-        <Card.Meta>
-          <span className='date'>{selectedActivity.date}</span>
-        </Card.Meta>
-        <Card.Description>{selectedActivity.description}</Card.Description>
-      </Card.Content>
-      <Card.Content extra>
-        <Button.Group widths='2'>
-          <Button
-            as={Link}
-            to={getManageActivityRoute(selectedActivity.id)}
-            basic
-            color='blue'
-            content='Edit'
-          />
-          <Button basic color='grey' content='Cancel' />
-        </Button.Group>
-      </Card.Content>
-    </Card>
+    <Grid>
+      <Grid.Column width={10}>
+        <ActivityDetailedHeader activity={selectedActivity} />
+        <ActivityDetailedInfo activity={selectedActivity} />
+        <ActivityDetailedChat />
+      </Grid.Column>
+      <Grid.Column width={6}>
+        <ActivityDetailedSidebar />
+      </Grid.Column>
+    </Grid>
   );
 });
