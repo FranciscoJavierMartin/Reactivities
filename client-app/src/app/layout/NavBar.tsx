@@ -5,6 +5,7 @@ import { Button, Container, Menu } from 'semantic-ui-react';
 import {
   ACTIVITIES_PAGE_ROUTE,
   CREATE_ACTIVITY_PAGE_ROUTE,
+  ERRORS_PAGE_ROUTE,
   HOME_PAGE_ROUTE,
 } from '../constants/routes';
 
@@ -17,6 +18,7 @@ export default observer(function NavBar() {
           Reactivities
         </Menu.Item>
         <Menu.Item name='Activities' as={NavLink} to={ACTIVITIES_PAGE_ROUTE} />
+        <Menu.Item name='Errors' as={NavLink} to={ERRORS_PAGE_ROUTE} />
         <Menu.Item>
           <Button
             as={NavLink}

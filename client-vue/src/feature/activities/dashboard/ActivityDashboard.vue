@@ -4,7 +4,7 @@
       <ActivityList />
     </div>
     <div class="six wide column">
-      <ActivityFilters/>
+      <ActivityFilters />
     </div>
   </div>
   <Loading v-else content="Loading app" />

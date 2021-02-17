@@ -445,3 +445,4 @@ $RECYCLE.BIN/
 reactivities.db
 appsettings.json
 
+.env.*

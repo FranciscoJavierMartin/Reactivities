@@ -34,6 +34,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { Activity } from '../../../app/models/activity';

@@ -1,14 +1,18 @@
 import { ActionContext } from 'vuex';
 import { MutationTypes as ActivityMTypes } from './modules/activity/mutation-types';
 import { ActionTypes as ActivityATypes } from './modules/activity/action-types';
+import { MutationTypes as CommonMTypes } from './modules/common/mutation-types';
+import { ActionTypes as CommonATypes } from './modules/common/action-types';
 import { MutationTypes as RootMTypes } from './modules/root/mutation-types';
 import { ActionTypes as RootATypes } from './modules/root/action-types';
 import { Activity } from '../models/activity';
+import { ServerError } from '../models/serverError';
 
 export interface IRootState {}
 
 export interface IMergedState extends IRootState {
   activityModule: ActivityStateTypes;
+  commonModule: CommonStateTypes;
 }
 
 export interface IRootGettersTypes {}
@@ -80,6 +84,39 @@ export interface ActivityActionsTypes {
   ): Promise<void>;
 }
 
-export interface StoreActions extends RootActionsTypes, ActivityActionsTypes {}
+/*********************** COMMON MODULE TYPES  ***********************/
+export interface CommonStateTypes {
+  error: ServerError | null;
+}
 
-export interface StoreGetters extends IRootGettersTypes, ActivityGettersTypes {}
+export interface CommonGettersTypes {
+  getError(state: CommonStateTypes): ServerError | null;
+}
+
+export type CommonMutationsTypes<S = ActivityStateTypes> = {
+  [CommonMTypes.SET_ERROR](state: S, payload: ServerError): void;
+};
+
+export type AugmentedActionContextCommon = {
+  commit<K extends keyof CommonMutationsTypes>(
+    key: K,
+    payload: Parameters<CommonMutationsTypes[K]>[1]
+  ): ReturnType<CommonMutationsTypes[K]>;
+} & Omit<ActionContext<CommonStateTypes, IRootState>, 'commit'>;
+
+export interface CommonActionsTypes {
+  [CommonATypes.SET_ERROR](
+    { commit }: AugmentedActionContextCommon,
+    payload: ServerError
+  ): void;
+}
+
+export interface StoreActions
+  extends RootActionsTypes,
+    ActivityActionsTypes,
+    CommonActionsTypes {}
+
+export interface StoreGetters
+  extends IRootGettersTypes,
+    ActivityGettersTypes,
+    CommonGettersTypes {}

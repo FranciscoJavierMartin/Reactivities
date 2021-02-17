@@ -1,21 +1,21 @@
 <template>
   <div class="ui segments">
-    <div class="ui basic attached top segment" :style="{ padding: 0 }">
+    <div class="ui basic attached top segment" style="padding: 0">
       <img
         :src="`/assets/categoryImages/${activity.category}.jpg`"
         class="ui fluid image"
-        :style="{ filter: 'brightness(30%)' }"
+        style="filter: brightness(30%)"
       />
       <div
         class="ui basic segment"
-        :style="{
-          position: 'absolute',
-          bottom: '5%',
-          left: '5%',
-          width: '100%',
-          height: 'auto',
-          color: 'white',
-        }"
+        style="
+          position: absolute;
+          bottom: 5%;
+          left: 5%;
+          width: 100%;
+          height: auto;
+          color: white;
+        "
       >
         <div class="ui items">
           <div class="item">

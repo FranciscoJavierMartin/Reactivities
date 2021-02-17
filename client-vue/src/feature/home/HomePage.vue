@@ -5,13 +5,13 @@
         <img
           src="/assets/logo.png"
           class="ui massive image"
-          :style="{ marginBottom: '12px' }"
+          style="margin-bottom: 12px"
         />
         Reactivities
       </h1>
     </div>
     <h2 class="ui inverted header">Welcome to Reactivities</h2>
-    <router-link to="/activities" class="ui huge inverted button" role="button">
+    <router-link to="/activities" class="ui huge inverted button">
       Take me to the Activities!
     </router-link>
   </div>

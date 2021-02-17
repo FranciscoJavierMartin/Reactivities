@@ -38,6 +38,13 @@ dotnet tool install --global dotnet-ef
 dotnet ef migrations add InitialCreate -p Persistence -s API
 ```
 
+Commands to drop database
+
+```bash
+dotnet ef database drop -s API -p Persistence
+dotnet ef database update
+```
+
 ## Setup client app
 
 ```bash
