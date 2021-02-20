@@ -1,1 +1,27 @@
-<p>nav-bar works!</p>
+<div class="ui inverted top fixed menu">
+  <div class="ui container">
+    <a routerLink="/" class="header item">
+      <img
+        src="../../../assets/logo.png"
+        alt="logo"
+        style="margin-right: 10px"
+      />
+      Reactivities
+    </a>
+    <a routerLink="/activities" class="item" routerLinkActive="active"
+      >Activities</a
+    >
+    <a routerLink="/errors" class="item" routerLinkActive="active"
+      >Error</a
+    >
+    <div class="item">
+      <a
+        routerLink="/activities/createActivity"
+        class="ui positive button"
+        role="button"
+      >
+        Create Activity
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,4 @@
+.ui.inverted.vertical.center.aligned.segment.masthead {
+  justify-content: center;
+  flex-direction: column;
+}

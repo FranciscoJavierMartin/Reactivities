@@ -1,0 +1,36 @@
+<div class="ui segments">
+  <div class="ui segment host">
+    <div class="ui items">
+      <div class="item">
+        <div class="ui tiny circular image">
+          <img src="../../../../assets/user.png" />
+        </div>
+        <div class="content">
+          <a routerLink="/activities/{{ activity.id }}" class="header">
+            {{ activity.title }}</a
+          >
+          <div class="description">Hosted by Bob</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui segment">
+    <span>
+      <i class="clock icon"></i>
+      {{ activity.date | date: "dd MMM yyyy h:mm aa" }}
+      <i class="marker icon"></i>
+      {{ activity.venue }}
+    </span>
+  </div>
+  <div class="ui secondary segment">Attendees go here</div>
+  <div class="ui clearing segment">
+    <span>{{ activity.description }}</span>
+    <a
+      routerLink="/activities/{{ activity.id }}"
+      class="ui teal right floated button"
+      role="button"
+    >
+      View
+    </a>
+  </div>
+</div>

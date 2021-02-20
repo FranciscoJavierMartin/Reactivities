@@ -1,0 +1,14 @@
+<div>
+  <div *ngFor="let groupedActivity of groupedActivities" class="group-by-date">
+    <div class="ui teal sub header">
+      {{ groupedActivity[0] }}
+    </div>
+    <div>
+      <app-activity-list-item
+        *ngFor="let activity of groupedActivity[1]"
+        [activity]="activity"
+      >
+      </app-activity-list-item>
+    </div>
+  </div>
+</div>

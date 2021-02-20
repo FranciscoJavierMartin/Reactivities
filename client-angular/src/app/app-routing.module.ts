@@ -21,12 +21,12 @@ const routes: Routes = [
         loadChildren: () =>
           import('./errors/errors.module').then((mod) => mod.ErrorsModule),
       },
+      {
+        path: '**',
+        redirectTo: 'not-found',
+        pathMatch: 'full',
+      },
     ],
-  },
-  {
-    path: '**',
-    redirectTo: 'not-found',
-    pathMatch: 'full',
   },
 ];
 
