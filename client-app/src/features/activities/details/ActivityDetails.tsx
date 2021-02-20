@@ -7,6 +7,7 @@ import ActivityDetailedChat from './ActivityDetailedChat';
 import ActivityDetailedHeader from './ActivityDetailedHeader';
 import ActivityDetailedInfo from './ActivityDetailedInfo';
 import ActivityDetailedSidebar from './ActivityDetailedSidebar';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
 
 export default observer(function ActivityDetails() {
   const { activityStore } = useStore();
@@ -19,7 +20,9 @@ export default observer(function ActivityDetails() {
     }
   }, [id, loadActivity]);
 
-  return isLoadingInitial || !selectedActivity ? null : (
+  return isLoadingInitial || !selectedActivity ? (
+    <LoadingComponent content='Loading activity' />
+  ) : (
     <Grid>
       <Grid.Column width={10}>
         <ActivityDetailedHeader activity={selectedActivity} />

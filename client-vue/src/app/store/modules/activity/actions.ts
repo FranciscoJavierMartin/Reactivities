@@ -17,7 +17,7 @@ export const actions: ActionTree<ActivityStateTypes, IRootState> &
       const activitiesFromServer = (await agent.Activities.list()).map(
         (activity: Activity) => ({
           ...activity,
-          date: activity.date.split('T')[0],
+          date: new Date(activity.date!),
         })
       );
       commit(MutationTypes.SET_ACTIVITIES, activitiesFromServer);
@@ -40,7 +40,7 @@ export const actions: ActionTree<ActivityStateTypes, IRootState> &
 
       try {
         activity = await agent.Activities.details(payload);
-        activity.date = activity.date.split('T')[0];
+        activity.date = new Date(activity.date!);
         commit(MutationTypes.SET_ACTIVITY, activity);
         commit(MutationTypes.SET_SELECTED_ACTIVITY, activity);
       } catch (error) {

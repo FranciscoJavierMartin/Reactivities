@@ -2,13 +2,14 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import { Activity } from '../models/activity';
 import agent from '../api/agent';
+import { format } from 'date-fns';
 
 export default class ActivityStore {
   activityRegistry: Map<string, Activity> = new Map<string, Activity>();
   selectedActivity: Activity | undefined = undefined;
   editMode: boolean = false;
   isLoading: boolean = false;
-  isLoadingInitial: boolean = true;
+  isLoadingInitial: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -16,14 +17,14 @@ export default class ActivityStore {
 
   get activitiesByDate(): Activity[] {
     return Array.from(this.activityRegistry.values()).sort(
-      (a: Activity, b: Activity) => Date.parse(a.date) - Date.parse(b.date)
+      (a: Activity, b: Activity) => a.date!.getTime() - b.date!.getTime()
     );
   }
 
   get groupedActivities(): [string, Activity[]][] {
     return Object.entries(
       this.activitiesByDate.reduce((activities, activity) => {
-        const date = activity.date;
+        const date = format(activity.date!, 'dd MMM yyyy');
         activities[date] = activities[date]
           ? [...activities[date], activity]
           : [activity];
@@ -33,6 +34,7 @@ export default class ActivityStore {
   }
 
   loadActivities = async (): Promise<void> => {
+    this.isLoadingInitial = true;
     try {
       const activitiesFromServer = await agent.Activities.list();
 
@@ -51,8 +53,8 @@ export default class ActivityStore {
     if (activity) {
       this.selectedActivity = activity;
     } else {
-      this.isLoadingInitial = true;
       try {
+        this.isLoadingInitial = true;
         activity = await agent.Activities.details(id);
         this.setActivity(activity);
         runInAction(() => {
@@ -135,7 +137,7 @@ export default class ActivityStore {
   };
 
   private setActivity = (activity: Activity) => {
-    activity.date = activity.date.split('T')[0];
+    activity.date = new Date(activity.date!);
     this.activityRegistry.set(activity.id, activity);
   };
 }

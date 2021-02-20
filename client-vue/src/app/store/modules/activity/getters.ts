@@ -1,4 +1,5 @@
 import { GetterTree } from 'vuex';
+import { format } from 'date-fns';
 import { Activity } from '../../../models/activity';
 import {
   ActivityGettersTypes,
@@ -24,7 +25,7 @@ export const getters: GetterTree<ActivityStateTypes, IRootState> &
     return Object.entries(
       getActivitiesOrderedByDate(state.activityRegistry.values()).reduce(
         (activities, activity) => {
-          const date = activity.date;
+          const date = format(activity.date!, 'dd MMM yyyy');
           activities[date] = activities[date]
             ? [...activities[date], activity]
             : [activity];
@@ -40,6 +41,6 @@ function getActivitiesOrderedByDate(
   activities: IterableIterator<Activity>
 ): Activity[] {
   return Array.from(activities).sort(
-    (a: Activity, b: Activity) => Date.parse(a.date) - Date.parse(b.date)
+    (a: Activity, b: Activity) => a.date!.getTime() - b.date!.getTime()
   );
 }

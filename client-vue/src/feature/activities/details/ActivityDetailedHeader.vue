@@ -23,7 +23,7 @@
               <div class="ui huge header" style="color: white">
                 {{ activity.title }}
               </div>
-              <p>{{ activity.date }}</p>
+              <p>{{ dateFormatted }}</p>
               <p>Hosted by <strong>Bob</strong></p>
             </div>
           </div>
@@ -33,21 +33,36 @@
     <div class="ui clearing bottom attached segment">
       <button class="ui teal button">Join Activity</button>
       <button class="ui button">Cancel attendance</button>
-      <button class="ui orange right floated button">Manage Event</button>
+      <router-link
+        :to="{ name: MANAGE_ACTIVITY_PAGE_NAME, params: { id: activity.id } }"
+        class="ui orange right floated button"
+        >Manage Event</router-link
+      >
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
+import { format } from 'date-fns';
+import { MANAGE_ACTIVITY_PAGE_NAME } from '../../../app/constants/routes';
 import { Activity } from '../../../app/models/activity';
-
 export default defineComponent({
   props: {
     activity: {
       type: Object as () => Activity,
       required: true,
     },
+  },
+  setup(props) {
+    const dateFormatted = computed<string>(() =>
+      format(props.activity.date!, 'dd MMM yyyy h:mm aa')
+    );
+
+    return {
+      dateFormatted,
+      MANAGE_ACTIVITY_PAGE_NAME,
+    };
   },
 });
 </script>

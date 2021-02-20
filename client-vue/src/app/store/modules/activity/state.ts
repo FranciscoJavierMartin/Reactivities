@@ -6,5 +6,5 @@ export const state: ActivityStateTypes = {
   selectedActivity: undefined,
   editMode: false,
   isLoading: false,
-  isLoadingInitial: true,
+  isLoadingInitial: false,
 };

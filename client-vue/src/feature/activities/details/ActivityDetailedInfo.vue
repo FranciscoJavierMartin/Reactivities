@@ -16,7 +16,7 @@
           <i class="calendar large icon teal" />
         </div>
         <div class="fifteen wide column">
-          <span>{{ activity.date }}</span>
+          <span>{{ dateFormatted }}</span>
         </div>
       </div>
     </div>
@@ -34,7 +34,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { format } from 'date-fns';
+import { computed, defineComponent } from 'vue';
 import { Activity } from '../../../app/models/activity';
 
 export default defineComponent({
@@ -43,6 +44,15 @@ export default defineComponent({
       type: Object as () => Activity,
       required: true,
     },
+  },
+  setup(props) {
+    const dateFormatted = computed<string>(() =>
+      format(props.activity.date!, 'dd MMM yyyy h:mm aa')
+    );
+
+    return {
+      dateFormatted,
+    };
   },
 });
 </script>
