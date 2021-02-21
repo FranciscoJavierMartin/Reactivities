@@ -176,3 +176,36 @@ services.AddControllers().AddFluentValidation(config =>
     config.RegisterValidatorsFromAssemblyContaining<Create>();
   });
 ```
+
+## Add Identity
+
+```bash
+cd Domain
+nuget install Microsoft.AspNetCore.Identity.EntityFrameworkCore
+```
+
+Create a class that extends from IdentityUser and add the properties that you need like Bio or DisplayName
+
+```csharp
+public class AppUser : IdentityUser{}
+```
+
+Extends DataContext from _IdentityDbContext_ instead of _DbContext_
+
+```csharp
+// Inside the Persistence project
+public class DataContext : IdentityDbContext<AppUser>{}
+```
+
+Make a migration at project root level
+
+```bash
+ dotnet ef migrations add IdentityAdded -p Persistence -s API
+```
+
+Install package to manage JWT
+
+```bash
+cd API
+nuget install Microsoft.AspNetCore.Authentication.JwtBearer
+```
