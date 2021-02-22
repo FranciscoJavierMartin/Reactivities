@@ -209,3 +209,147 @@ Install package to manage JWT
 cd API
 nuget install Microsoft.AspNetCore.Authentication.JwtBearer
 ```
+
+## Add many to many relationships (with EntityFramework Core)
+
+Create an intermediate class under Domain project
+
+```csharp
+ public class ActivityAttendee
+  {
+    public string AppUserId { get; set; }
+    public AppUser AppUser { get; set; }
+    public Guid ActivityId { get; set; }
+    public Activity Activity { get; set; }
+   // You can add also other attributes that you may need it
+  }
+```
+
+Add an attribute on both classes
+
+```csharp
+class Activity {
+  public ICollection<ActivityAttendee> Attendees { get; set; }
+  //Other attributes
+}
+
+class AppUser {
+  public ICollection<ActivityAttendee> Activities { get; set; }
+   //Other attributes
+}
+```
+
+Add a new DbSet on DataContext and override OnModelCreating method
+
+```csharp
+public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
+
+protected override void OnModelCreating(ModelBuilder builder)
+  {
+    base.OnModelCreating(builder);
+    // Create the Primary Key's Intermediate table
+    builder.Entity<ActivityAttendee>(x => x.HasKey(aa => new { aa.AppUserId, aa.ActivityId }));
+    // Target the AppUserId to the AppUser's Id
+    builder.Entity<ActivityAttendee>()
+      .HasOne(u => u.AppUser)
+      .WithMany(a => a.Activities)
+      .HasForeignKey(aa => aa.AppUserId);
+    // Target the ActivityId to the Activity's Id
+    builder.Entity<ActivityAttendee>()
+      .HasOne(u => u.Activity)
+      .WithMany(a => a.Attendees)
+      .HasForeignKey(aa => aa.ActivityId);
+  }
+```
+
+Add a migration
+
+```bash
+dotnet ef migrations add ActivityAttendee -p Persistence -s API
+```
+
+## Create the Infrastructure project
+
+At project root level
+
+```bash
+dotnet new classlib -n Infrastructure
+dotnet sln add Infrastructure
+cd Infrastructure
+dotnet add reference ../Application
+cd ../API
+dotnet add reference ../Infrastructure
+cd ..
+dotnet restore
+```
+
+## Loading related data
+
+In order to avoid circular references between many to many relationships, create a DTO class and add a collection. On this example Profile refers to users
+
+```csharp
+public class ActivityDto
+  {
+    public ICollection<Profile> Attendees { get; set; }
+    // Others attributes here
+  }
+```
+
+Instead of use _Include_ that eager load data, use _ProjectTo_ to lazy load
+
+```csharp
+var activities = await _context.Activities
+  .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
+  .ToListAsync(cancellationToken);
+```
+
+Setup AutoMapper to populate fields
+
+```csharp
+CreateMap<ActivityAttendee, Profiles.Profile>()
+  .ForMember(d => d.DisplayName, o => o.MapFrom(s => s.AppUser.DisplayName))
+```
+
+## Add custom policy
+
+To add a custom policy to restrict the access to certains actions. Create two classes under Security folder at Infrastructure project and override the method HandleRequirementAsync.
+
+```csharp
+public class IHostRequirement : IAuthorizationRequirement { }
+
+public class IHostRequirementHandler : AuthorizationHandler<IHostRequirement>
+{
+  protected override Task HandleRequirementAsync(
+    AuthorizationHandlerContext context,
+    IHostRequirement requirement){
+      // Handle logic to determinate if user can do the action
+
+      // Use this to indicate success
+      context.Succeed(requirement);
+
+      // Use this to indicate failure
+      context.Fail();
+
+      // Finally return this
+      return Task.CompletedTask;
+    }
+}
+```
+
+Add the policy on the service configuration
+
+```csharp
+services.AddAuthorization(opt =>
+  {
+    opt.AddPolicy("IsActivityHost", policy =>
+    {
+      policy.Requirements.Add(new IHostRequirement());
+    });
+  });
+```
+
+Finally on the endpoint use _Authorize_ to enable the policy
+
+```csharp
+[Authorize(Policy = "IsActivityHost")]
+```
