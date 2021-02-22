@@ -5,7 +5,7 @@ import {
   NOT_FOUND_PAGE_ROUTE,
   SERVER_ERROR_PAGE_ROUTE,
 } from '../constants/routes';
-import { Activity } from '../models/activity';
+import { Activity, ActivityFormValues } from '../models/activity';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
@@ -77,10 +77,11 @@ const request = {
 const Activities = {
   list: () => request.get<Activity[]>('activities'),
   details: (id: string) => request.get<Activity>(`activities/${id}`),
-  create: (activity: Activity) => request.post('activities', activity),
-  update: (activity: Activity) =>
+  create: (activity: ActivityFormValues) => request.post('activities', activity),
+  update: (activity: ActivityFormValues) =>
     request.put(`activities/${activity.id}`, activity),
   delete: (id: string) => request.del(`activities/${id}`),
+  attend: (id: string) => request.post<void>(`activities/${id}/attend`, {}),
 };
 
 const Account = {

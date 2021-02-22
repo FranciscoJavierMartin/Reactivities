@@ -20,7 +20,6 @@ import ActivityDetails from '../../features/activities/details/ActivityDetails';
 import TestErrors from '../../features/errors/TestError';
 import NotFoundPage from '../../features/errors/NotFoundPage';
 import ServerErrorPage from '../../features/errors/ServerErrorPage';
-import LoginForm from '../../features/users/LoginForm';
 import { useStore } from '../stores/store';
 import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
