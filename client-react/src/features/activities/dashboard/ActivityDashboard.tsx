@@ -6,7 +6,7 @@ import { useStore } from '../../../app/stores/store';
 import ActivityFilters from './ActivityFilters';
 import ActivityList from './ActivityList';
 
-export default observer(function ActivitiDashboard() {
+export default observer(function ActivityDashboard() {
   const { activityStore } = useStore();
   const { loadActivities, activityRegistry } = activityStore;
 

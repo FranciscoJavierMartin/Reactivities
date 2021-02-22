@@ -6,12 +6,21 @@ import {
   SERVER_ERROR_PAGE_ROUTE,
 } from '../constants/routes';
 import { Activity } from '../models/activity';
+import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
 const sleep = (delay: number) =>
   new Promise((resolve) => setTimeout(resolve, delay));
 
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+
+axios.interceptors.request.use((config) => {
+  const token = store.commonStore.token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 axios.interceptors.response.use(
   async (response) => {
@@ -50,6 +59,7 @@ axios.interceptors.response.use(
         history.push(SERVER_ERROR_PAGE_ROUTE);
         break;
     }
+
     return Promise.reject(error);
   }
 );
@@ -73,8 +83,16 @@ const Activities = {
   delete: (id: string) => request.del(`activities/${id}`),
 };
 
+const Account = {
+  current: () => request.get<User>('/account'),
+  login: (user: UserFormValues) => request.post<User>('/account/login', user),
+  register: (user: UserFormValues) =>
+    request.post<User>('/account/register', user),
+};
+
 const agent = {
   Activities,
+  Account,
 };
 
 export default agent;

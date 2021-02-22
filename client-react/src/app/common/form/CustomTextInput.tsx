@@ -6,6 +6,7 @@ interface CustomTextInputProps {
   placeholder: string;
   name: string;
   label?: string;
+  type?: 'text' | 'password';
 }
 
 export default function CustomTextInput(props: CustomTextInputProps) {
