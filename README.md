@@ -75,9 +75,14 @@ services.AddMediatR(typeof(List.Handler).Assembly);
   }
 ```
 
+By convention use _Query_ as class name when retrieve data and _Command_ when return nothing
+
 ```csharp
 // Application/Activities/List.cs
-  public class Query : IRequest<List<Activity>>{}
+  public class Query : IRequest<List<Activity>>{
+    // Add your params here if you need it
+  }
+
   public class Handler : IRequestHandler<Query, List<Activity>>
   {
     private readonly DataContext _context;
@@ -352,4 +357,51 @@ Finally on the endpoint use _Authorize_ to enable the policy
 
 ```csharp
 [Authorize(Policy = "IsActivityHost")]
+```
+
+## Upload images to Cloudinary
+
+Install Cloudinary package from NuGet
+
+```bash
+cd Infrastructure
+nuget install CloudinaryDotNet
+```
+
+On your API/appsettings.json add this and fill with your values provided on the Cloudinary dashboard
+
+```json
+"Cloudinary":{
+  "CloudName": "",
+  "ApiKey": "",
+  "ApiSecret": ""
+}
+```
+
+Create a class under Infrastrucure/Photos
+
+```csharp
+public class CloudinarySettings {
+  public string CloudName { get; set; }
+  public string ApiKey { get; set; }
+  public string ApiSecret { get; set; }
+}
+```
+
+Add to service configuration
+
+```csharp
+services.Configure<CloudinarySettings>(config.GetSection("Cloudinary"));
+```
+
+Add a new DbSet on DataContext
+
+```csharp
+public DbSet<Photo> Photos { get; set; }
+```
+
+Do not forget add a new migration when add the new DbSet
+
+```bash
+dotnet ef migrations add PhotoEntityAdded -p Persistence -s API
 ```
