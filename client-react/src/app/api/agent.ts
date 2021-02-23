@@ -6,6 +6,7 @@ import {
   SERVER_ERROR_PAGE_ROUTE,
 } from '../constants/routes';
 import { Activity, ActivityFormValues } from '../models/activity';
+import { Photo, Profile } from '../models/profile';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
@@ -77,7 +78,8 @@ const request = {
 const Activities = {
   list: () => request.get<Activity[]>('activities'),
   details: (id: string) => request.get<Activity>(`activities/${id}`),
-  create: (activity: ActivityFormValues) => request.post('activities', activity),
+  create: (activity: ActivityFormValues) =>
+    request.post('activities', activity),
   update: (activity: ActivityFormValues) =>
     request.put(`activities/${activity.id}`, activity),
   delete: (id: string) => request.del(`activities/${id}`),
@@ -91,9 +93,25 @@ const Account = {
     request.post<User>('/account/register', user),
 };
 
+const Profiles = {
+  get: (username: string) => request.get<Profile>(`/profiles/${username}`),
+  uploadPhoto: (file: Blob) => {
+    let formData = new FormData();
+    formData.append('File', file);
+    return axios.post<Photo>('photos', formData, {
+      headers: {
+        'Content-type': 'multipart/form-data',
+      },
+    });
+  },
+  setMainPhoto: (id: string) => request.post(`/photos/${id}/setMain`, {}),
+  deletePhoto: (id: string) => request.del(`/photos/${id}`),
+};
+
 const agent = {
   Activities,
   Account,
+  Profiles,
 };
 
 export default agent;

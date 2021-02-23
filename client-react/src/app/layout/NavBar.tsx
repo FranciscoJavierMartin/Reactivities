@@ -6,6 +6,7 @@ import {
   ACTIVITIES_PAGE_ROUTE,
   CREATE_ACTIVITY_PAGE_ROUTE,
   ERRORS_PAGE_ROUTE,
+  getProfileRoute,
   HOME_PAGE_ROUTE,
 } from '../constants/routes';
 import { useStore } from '../stores/store';
@@ -41,7 +42,7 @@ export default observer(function NavBar() {
             <Dropdown.Menu>
               <Dropdown.Item
                 as={Link}
-                to={`/profile/${user?.username}`}
+                to={getProfileRoute(user?.username)}
                 text='My Profile'
                 icon='user'
               />

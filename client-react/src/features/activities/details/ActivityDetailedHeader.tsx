@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Header, Item, Segment, Image, Label } from 'semantic-ui-react';
 import { format } from 'date-fns';
-import { getManageActivityRoute } from '../../../app/constants/routes';
+import { getManageActivityRoute, getProfileRoute } from '../../../app/constants/routes';
 import { Activity } from '../../../app/models/activity';
 import { useStore } from '../../../app/stores/store';
 
@@ -57,7 +57,7 @@ export default observer(function ActivityDetailedHeader({ activity }: Props) {
                 <p>
                   Hosted by{' '}
                   <strong>
-                    <Link to={`/profiles/${activity.id}`}>
+                    <Link to={getProfileRoute(activity.host?.username)}>
                       {activity.host?.displayName}
                     </Link>
                   </strong>

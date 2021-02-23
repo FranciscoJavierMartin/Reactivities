@@ -2,7 +2,10 @@ import React from 'react';
 import { Item, Button, Segment, Icon, Label } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { getActivityDetailsRoute } from '../../../app/constants/routes';
+import {
+  getActivityDetailsRoute,
+  getProfileRoute,
+} from '../../../app/constants/routes';
 import { Activity } from '../../../app/models/activity';
 import ActivityListItemAttendee from './ActivityListItemAttendee';
 
@@ -30,14 +33,17 @@ export default function ActivityListItem({
               style={{ marginBottom: 3 }}
               size='tiny'
               circular
-              src='/assets/user.png'
+              src={activity.host?.image || '/assets/user.png'}
             />
             <Item.Content>
               <Item.Header as={Link} to={getActivityDetailsRoute(activity.id)}>
                 {activity.title}
               </Item.Header>
               <Item.Description>
-                Hosted by {activity.host?.displayName}
+                Hosted by{' '}
+                <Link to={getProfileRoute(activity.host?.username)}>
+                  {activity.host?.displayName}
+                </Link>
               </Item.Description>
               {activity.isHost && (
                 <Item.Description>

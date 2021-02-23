@@ -14,6 +14,7 @@ import {
   MANAGE_ACTIVITY_PAGE_ROUTE,
   ERRORS_PAGE_ROUTE,
   SERVER_ERROR_PAGE_ROUTE,
+  PROFILE_PAGE_ROUTE,
 } from '../constants/routes';
 import ActivityForm from '../../features/activities/form/ActivityForm';
 import ActivityDetails from '../../features/activities/details/ActivityDetails';
@@ -23,6 +24,7 @@ import ServerErrorPage from '../../features/errors/ServerErrorPage';
 import { useStore } from '../stores/store';
 import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
+import ProfilePage from '../../features/profiles/ProfilePage';
 
 export default observer(function App(): JSX.Element {
   const location = useLocation();
@@ -41,7 +43,7 @@ export default observer(function App(): JSX.Element {
   ) : (
     <>
       <ToastContainer position='bottom-right' hideProgressBar />
-      <ModalContainer/>
+      <ModalContainer />
       <Route exact path={HOME_PAGE_ROUTE} component={HomePage} />
       <Route
         path={'/(.+)'}
@@ -67,6 +69,7 @@ export default observer(function App(): JSX.Element {
                   ]}
                   component={ActivityForm}
                 />
+                <Route path={PROFILE_PAGE_ROUTE} component={ProfilePage} />
                 <Route path={ERRORS_PAGE_ROUTE} component={TestErrors} />
                 <Route
                   path={SERVER_ERROR_PAGE_ROUTE}

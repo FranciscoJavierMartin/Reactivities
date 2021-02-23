@@ -2,8 +2,9 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { List, Image, Popup } from 'semantic-ui-react';
+import { getProfileRoute } from '../../../app/constants/routes';
 import { Profile } from '../../../app/models/profile';
-import ProfileCard from '../../Profiles/ProfileCard';
+import ProfileCard from '../../profiles/ProfileCard';
 
 interface ActivityListItemAttendeeProps {
   attendees: Profile[];
@@ -22,7 +23,7 @@ export default observer(function ActivityListItemAttendee({
             <List.Item
               key={attendee.username}
               as={Link}
-              to={`/profiles/${attendee.username}`}
+              to={getProfileRoute(attendee.username)}
             >
               <Image
                 size='mini'
