@@ -526,3 +526,18 @@ this.hubConnection
   .stop()
   .catch((error) => console.log('Error stopping connection: ', error));
 ```
+
+## Many to many self relationship
+
+Entity framework Core is not particularity good managing many to many relationships, so instead it is a better approach use a join table. A tipical example is an user following system.
+
+```csharp
+public class UserFollowing
+{
+  public string ObserverId { get; set; }
+  public AppUser Observer { get; set; }
+  public string TargetId { get; set; }
+  public AppUser Target { get; set; }
+  // You can add more attributes if you need them
+}
+```

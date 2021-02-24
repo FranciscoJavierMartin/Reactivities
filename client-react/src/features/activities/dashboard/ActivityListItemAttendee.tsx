@@ -13,6 +13,11 @@ interface ActivityListItemAttendeeProps {
 export default observer(function ActivityListItemAttendee({
   attendees,
 }: ActivityListItemAttendeeProps): JSX.Element {
+  const styles = {
+    borderColor: 'orange',
+    borderWidth: 3,
+  };
+
   return (
     <List horizontal>
       {attendees.map((attendee) => (
@@ -30,6 +35,8 @@ export default observer(function ActivityListItemAttendee({
                 circular
                 src={attendee.image || '/assets/user.png'}
                 alt={attendee.username}
+                bordered
+                style={attendee.following ? styles : null}
               />
             </List.Item>
           }

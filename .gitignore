@@ -443,6 +443,7 @@ $RECYCLE.BIN/
 
 
 reactivities.db
+reactivities.db-*
 appsettings.json
 
 .env.*

@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { history } from '../..';
+import { FollowingPredicate } from '../common/options/followingTypes';
 import {
   NOT_FOUND_PAGE_ROUTE,
   SERVER_ERROR_PAGE_ROUTE,
@@ -108,6 +109,10 @@ const Profiles = {
   deletePhoto: (id: string) => request.del(`/photos/${id}`),
   updateProfile: (profile: Partial<Profile>) =>
     request.put('/profiles', profile),
+  updateFollowing: (username: string) =>
+    request.post(`/follow/${username}`, {}),
+  listFollowings: (username: string, predicate: FollowingPredicate) =>
+    request.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
 };
 
 const agent = {
