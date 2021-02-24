@@ -217,7 +217,7 @@ nuget install Microsoft.AspNetCore.Authentication.JwtBearer
 
 ## Add many to many relationships (with EntityFramework Core)
 
-Create an intermediate class under Domain project
+Create an join class under Domain project
 
 ```csharp
  public class ActivityAttendee
@@ -252,7 +252,7 @@ public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
 protected override void OnModelCreating(ModelBuilder builder)
   {
     base.OnModelCreating(builder);
-    // Create the Primary Key's Intermediate table
+    // Create the Primary Key's join table
     builder.Entity<ActivityAttendee>(x => x.HasKey(aa => new { aa.AppUserId, aa.ActivityId }));
     // Target the AppUserId to the AppUser's Id
     builder.Entity<ActivityAttendee>()
