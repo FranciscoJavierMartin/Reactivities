@@ -11,14 +11,23 @@ import LoadingComponent from '../../../app/layout/LoadingComponent';
 
 export default observer(function ActivityDetails() {
   const { activityStore } = useStore();
-  const { selectedActivity, loadActivity, isLoadingInitial } = activityStore;
+  const {
+    selectedActivity,
+    loadActivity,
+    isLoadingInitial,
+    clearSelectedActivity,
+  } = activityStore;
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     if (id) {
       loadActivity(id);
     }
-  }, [id, loadActivity]);
+
+    return () => {
+      clearSelectedActivity();
+    };
+  }, [id, loadActivity, clearSelectedActivity]);
 
   return isLoadingInitial || !selectedActivity ? (
     <LoadingComponent content='Loading activity' />
@@ -27,7 +36,7 @@ export default observer(function ActivityDetails() {
       <Grid.Column width={10}>
         <ActivityDetailedHeader activity={selectedActivity} />
         <ActivityDetailedInfo activity={selectedActivity} />
-        <ActivityDetailedChat />
+        <ActivityDetailedChat activityId={selectedActivity.id} />
       </Grid.Column>
       <Grid.Column width={6}>
         <ActivityDetailedSidebar activity={selectedActivity} />

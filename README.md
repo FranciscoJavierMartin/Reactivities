@@ -405,3 +405,124 @@ Do not forget add a new migration when add the new DbSet
 ```bash
 dotnet ef migrations add PhotoEntityAdded -p Persistence -s API
 ```
+
+## Add SignalR
+
+To use real time communication between use SignalR
+
+```csharp
+// Startup.cs
+app.UseEndpoints(endpoints =>
+{
+  endpoints.MapControllers();
+  endpoints.MapHub<ChatHub>("/chat");
+});
+```
+
+Add to configure services
+
+```csharp
+
+services.AddCors(opt =>
+{
+  opt.AddPolicy("CorsPolicy", policy =>
+  {
+    policy.AllowAnyMethod()
+      .AllowAnyHeader()
+      .AllowCredentials() // Add this line to enable CORS for SignalR
+      .WithOrigins(new string[3] { "http://localhost:3000", "http://localhost:3001", "http://localhost:4200" });
+  });
+});
+
+services.AddSignalR();
+```
+
+Add for authencicate on the hub
+
+```csharp
+services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(opt =>
+{
+  // Add this lines to enable authentication on the chat hub
+  opt.Events = new JwtBearerEvents
+  {
+    OnMessageReceived = context =>
+    {
+      var accessToken = context.Request.Query["access_token"];
+      var path = context.HttpContext.Request.Path;
+      if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
+      {
+        context.Token = accessToken;
+      }
+      return Task.CompletedTask;
+    }
+  };
+});
+```
+
+This is the equivalent to a ApiController
+
+```csharp
+public class ChatHub : Hub
+{
+  private readonly IMediator _mediator;
+  public ChatHub(IMediator mediator)
+  {
+    _mediator = mediator;
+  }
+  public async Task SendComment(Create.Command command)
+  {
+    var comment = await _mediator.Send(command);
+    await Clients.Group(command.ActivityId.ToString())
+      .SendAsync("ReceiveComments", comment.Value);
+  }
+  public override async Task OnConnectedAsync()
+  {
+    var httpContext = Context.GetHttpContext();
+    var activityId = httpContext.Request.Query["activityId"];
+    await Groups.AddToGroupAsync(Context.ConnectionId, activityId);
+    var result = await _mediator.Send(new List.Query { ActivityId = Guid.Parse(activityId) });
+    await Clients.Caller.SendAsync("LoadComments", result.Value);
+  }
+}
+```
+
+On the client side install SignalR
+
+```bash
+yarn add @microsoft/signalr
+```
+
+```ts
+// Declare variable
+hubConnection: HubConnection;
+
+// Create the connection
+this.hubConnection = new HubConnectionBuilder()
+  .withUrl(`${process.env.REACT_APP_BASE_URL_CHAT}?activityId=${activityId}`, {
+    accessTokenFactory: () => store.userStore.user?.token!,
+  })
+  .withAutomaticReconnect()
+  .configureLogging(LogLevel.Information)
+  .build();
+
+// Start the connection
+this.hubConnection
+  .start()
+  .catch((error) => console.log('Error establishing the connection: ', error));
+
+// Subscribe to 'LoadComments' events
+this.hubConnection.on('LoadComments', (comments: ChatComment[]) => {});
+
+// Subscribe to 'ReceiveComments' events
+this.hubConnection.on('ReceiveComments', (comment: ChatComment) => {});
+
+// Invoke a public method inside the class configure on the server
+// In our example ChatHub
+await this.hubConnection?.invoke('SendComment', values);
+
+// To stop connection. Do not forget when it is not need it.
+this.hubConnection
+  .stop()
+  .catch((error) => console.log('Error stopping connection: ', error));
+```
