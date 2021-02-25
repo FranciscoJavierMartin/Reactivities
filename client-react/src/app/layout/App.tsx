@@ -25,6 +25,7 @@ import { useStore } from '../stores/store';
 import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
 import ProfilePage from '../../features/profiles/ProfilePage';
+import PrivateRoute from './PrivateRoute';
 
 export default observer(function App(): JSX.Element {
   const location = useLocation();
@@ -52,16 +53,16 @@ export default observer(function App(): JSX.Element {
             <NavBar />
             <Container style={{ marginTop: '7em' }}>
               <Switch>
-                <Route
+                <PrivateRoute
                   exact
                   path={ACTIVITIES_PAGE_ROUTE}
                   component={ActivityDashboard}
                 />
-                <Route
+                <PrivateRoute
                   path={ACTIVITIES_DETAILS_PAGE_ROUTE}
                   component={ActivityDetails}
                 />
-                <Route
+                <PrivateRoute
                   key={location.key}
                   path={[
                     CREATE_ACTIVITY_PAGE_ROUTE,
@@ -69,7 +70,10 @@ export default observer(function App(): JSX.Element {
                   ]}
                   component={ActivityForm}
                 />
-                <Route path={PROFILE_PAGE_ROUTE} component={ProfilePage} />
+                <PrivateRoute
+                  path={PROFILE_PAGE_ROUTE}
+                  component={ProfilePage}
+                />
                 <Route path={ERRORS_PAGE_ROUTE} component={TestErrors} />
                 <Route
                   path={SERVER_ERROR_PAGE_ROUTE}
