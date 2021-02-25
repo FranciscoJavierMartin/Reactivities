@@ -541,3 +541,57 @@ public class UserFollowing
   // You can add more attributes if you need them
 }
 ```
+
+## Add pagination
+
+Add these headers with values
+
+```csharp
+// Create an extension method to add pagination header
+public static void AddPaginationHeader(thisHttpResponse response,
+      int currentPage, int itemsPerPage, inttotalItems, int totalPages)
+  {
+    var paginationHeader = new
+    {
+      currentPage,
+      itemsPerPage,
+      totalItems,
+      totalPages
+    };
+    response.Headers.Add("Pagination",
+        JsonSerializer.Serializ(paginationHeader));
+    response.Headers.Ad("Access-Control-Expose-Headers","Pagination");
+  }
+
+// BaseApiController
+Response.AddPaginationHeader(result.Value.CurrentPage,
+  result.Value.PageSize, result.Value.TotalCount,
+  result.Value.TotalPages);
+```
+
+Example paginated controller
+
+```csharp
+[HttpGet]
+public async Task<ActionResult> GetActivitie[FromQuery] PagingParams param)
+{
+  return HandlePagedResult(await Mediator.Se(new List.Query { Params = param }));
+}
+```
+
+Example of List handler
+
+```csharp
+public async Task<Result<PagedList<ActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
+{
+  var query = _context.Activities
+    .OrderBy(d => d.Date)
+    .ProjectTo<ActivityDto>(_mappConfigurationProvider,
+      new { currentUsername = _userAccessGetUsername() })
+    .AsQueryable()
+  return Result<PagedList<ActivityDtoSuccess(
+    await PagedList<ActivityDto>.CreateAs(query, 
+      request.Params.PageNumber, requeParams.PageSize)
+  );
+}
+```

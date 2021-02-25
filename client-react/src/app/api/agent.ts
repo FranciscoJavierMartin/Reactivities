@@ -7,6 +7,7 @@ import {
   SERVER_ERROR_PAGE_ROUTE,
 } from '../constants/routes';
 import { Activity, ActivityFormValues } from '../models/activity';
+import { PaginatedResult } from '../models/pagination';
 import { Photo, Profile } from '../models/profile';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
@@ -26,8 +27,17 @@ axios.interceptors.request.use((config) => {
 
 axios.interceptors.response.use(
   async (response) => {
+    let res = response;
     await sleep(1000);
-    return response;
+    const pagination = response.headers['pagination'];
+    if (pagination) {
+      response.data = new PaginatedResult(
+        response.data,
+        JSON.parse(pagination)
+      );
+      res = response as AxiosResponse<PaginatedResult<any>>;
+    }
+    return res;
   },
   (error: AxiosError) => {
     const { data, status, config } = error.response!;
@@ -69,7 +79,10 @@ axios.interceptors.response.use(
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const request = {
-  get: <T>(url: string) => axios.get<T>(url).then(responseBody),
+  get: <T>(url: string, params?: URLSearchParams) =>
+    axios
+      .get<T>(url, { params })
+      .then(responseBody),
   post: <T>(url: string, body: {}) =>
     axios.post<T>(url, body).then(responseBody),
   put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
@@ -77,7 +90,8 @@ const request = {
 };
 
 const Activities = {
-  list: () => request.get<Activity[]>('activities'),
+  list: (params: URLSearchParams) =>
+    request.get<PaginatedResult<Activity[]>>('activities', params),
   details: (id: string) => request.get<Activity>(`activities/${id}`),
   create: (activity: ActivityFormValues) =>
     request.post('activities', activity),
