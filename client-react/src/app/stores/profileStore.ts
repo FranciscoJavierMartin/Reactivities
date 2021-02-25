@@ -1,10 +1,12 @@
 import { makeAutoObservable, reaction, runInAction } from 'mobx';
 import agent from '../api/agent';
+import { FilteringPredicate } from '../common/options/filteringOptions';
 import { FollowingPredicate } from '../common/options/followingTypes';
-import { Photo, Profile } from '../models/profile';
+import { Photo, Profile, UserActivity } from '../models/profile';
 import { store } from './store';
 
 export default class ProfileStore {
+  currentUserProfile: Profile | null = null;
   profile: Profile | null = null;
   isLoadingProfile: boolean = false;
   isUploading: boolean = false;
@@ -12,6 +14,8 @@ export default class ProfileStore {
   isLoadingFollowings: boolean = false;
   isLoading: boolean = false;
   activeTab: number = 0;
+  userActivities: UserActivity[] = [];
+  isLoadingActivities: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -202,6 +206,28 @@ export default class ProfileStore {
       runInAction(() => {
         this.isLoadingFollowings = false;
       });
+    }
+  };
+
+  loadUserActivities = async (
+    username: string,
+    predicate?: FilteringPredicate
+  ) => {
+    this.isLoadingActivities = true;
+
+    try {
+      const activities = await agent.Profiles.listActivities(
+        username,
+        predicate!
+      );
+      console.log(activities);
+      runInAction(() => {
+        this.userActivities = activities;
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      runInAction(() => (this.isLoadingActivities = false));
     }
   };
 }

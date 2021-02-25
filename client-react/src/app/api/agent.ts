@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { history } from '../..';
+import { FilteringPredicate } from '../common/options/filteringOptions';
 import { FollowingPredicate } from '../common/options/followingTypes';
 import {
   NOT_FOUND_PAGE_ROUTE,
@@ -8,7 +9,7 @@ import {
 } from '../constants/routes';
 import { Activity, ActivityFormValues } from '../models/activity';
 import { PaginatedResult } from '../models/pagination';
-import { Photo, Profile } from '../models/profile';
+import { Photo, Profile, UserActivity } from '../models/profile';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
@@ -102,14 +103,14 @@ const Activities = {
 };
 
 const Account = {
-  current: () => request.get<User>('/account'),
-  login: (user: UserFormValues) => request.post<User>('/account/login', user),
+  current: () => request.get<User>('account'),
+  login: (user: UserFormValues) => request.post<User>('account/login', user),
   register: (user: UserFormValues) =>
-    request.post<User>('/account/register', user),
+    request.post<User>('account/register', user),
 };
 
 const Profiles = {
-  get: (username: string) => request.get<Profile>(`/profiles/${username}`),
+  get: (username: string) => request.get<Profile>(`profiles/${username}`),
   uploadPhoto: (file: Blob) => {
     let formData = new FormData();
     formData.append('File', file);
@@ -119,14 +120,17 @@ const Profiles = {
       },
     });
   },
-  setMainPhoto: (id: string) => request.post(`/photos/${id}/setMain`, {}),
-  deletePhoto: (id: string) => request.del(`/photos/${id}`),
+  setMainPhoto: (id: string) => request.post(`photos/${id}/setMain`, {}),
+  deletePhoto: (id: string) => request.del(`photos/${id}`),
   updateProfile: (profile: Partial<Profile>) =>
-    request.put('/profiles', profile),
-  updateFollowing: (username: string) =>
-    request.post(`/follow/${username}`, {}),
+    request.put('profiles', profile),
+  updateFollowing: (username: string) => request.post(`follow/${username}`, {}),
   listFollowings: (username: string, predicate: FollowingPredicate) =>
-    request.get<Profile[]>(`/follow/${username}?predicate=${predicate}`),
+    request.get<Profile[]>(`follow/${username}?predicate=${predicate}`),
+  listActivities: (username: string, predicate: FilteringPredicate) =>
+    request.get<UserActivity[]>(
+      `profiles/${username}/activities?predicate=${predicate}`
+    ),
 };
 
 const agent = {
