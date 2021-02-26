@@ -590,8 +590,50 @@ public async Task<Result<PagedList<ActivityDto>>> Handle(Query request, Cancella
       new { currentUsername = _userAccessGetUsername() })
     .AsQueryable()
   return Result<PagedList<ActivityDtoSuccess(
-    await PagedList<ActivityDto>.CreateAs(query, 
+    await PagedList<ActivityDto>.CreateAs(query,
       request.Params.PageNumber, requeParams.PageSize)
   );
+}
+```
+
+## Add security to your site
+
+I deploy to Heroku that serve sites over HTTPS, so that point is cover.
+
+```bash
+cd API
+nuget install NWebsec.AspNetCore.Middleware
+```
+
+```csharp
+// Startup.cs Configure method
+app.UseXContentTypeOptions();
+app.UseReferrerPolicy(opt => opt.NoReferrer());
+app.UseXXssProtection(opt => opt.EnabledWithBlockMode());
+app.UseXfo(opt => opt.Deny());
+app.UseCsp(opt => opt
+  .BlockAllMixedContent()
+  .StyleSources(s => s.Self()
+    .CustomSources("https://fonts.googleapis.com"))
+  .FontSources(s => s.Self()
+    .CustomSources("https://fonts.gstatic.com", "data:"))
+  .FormActions(s => s.Self())
+  .FrameAncestors(s => s.Self())
+  .ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com"))
+  .ScriptSources(s => s.Self()
+    .CustomSources("sha256-ma5XxS1EBgt17N22Qq31rOxxRWRfzUTQS1KOtfYwuNo="))
+);
+
+if (env.IsDevelopment())
+{
+  // Development configs like Swagger
+}
+else
+{
+  app.Use(async (context, next) =>
+  {
+    context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000");
+    await next.Invoke();
+  });
 }
 ```
