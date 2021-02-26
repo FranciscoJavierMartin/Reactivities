@@ -74,7 +74,9 @@ export default observer(function App(): JSX.Element {
                   path={PROFILE_PAGE_ROUTE}
                   component={ProfilePage}
                 />
-                <Route path={ERRORS_PAGE_ROUTE} component={TestErrors} />
+                {process.env.NODE_ENV === 'development' && (
+                  <Route path={ERRORS_PAGE_ROUTE} component={TestErrors} />
+                )}
                 <Route
                   path={SERVER_ERROR_PAGE_ROUTE}
                   component={ServerErrorPage}

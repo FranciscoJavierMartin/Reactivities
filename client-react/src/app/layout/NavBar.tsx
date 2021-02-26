@@ -23,7 +23,9 @@ export default observer(function NavBar() {
           Reactivities
         </Menu.Item>
         <Menu.Item name='Activities' as={NavLink} to={ACTIVITIES_PAGE_ROUTE} />
-        <Menu.Item name='Errors' as={NavLink} to={ERRORS_PAGE_ROUTE} />
+        {process.env.NODE_ENV === 'development' && (
+          <Menu.Item name='Errors' as={NavLink} to={ERRORS_PAGE_ROUTE} />
+        )}
         <Menu.Item>
           <Button
             as={NavLink}
