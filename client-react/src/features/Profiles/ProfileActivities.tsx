@@ -28,9 +28,6 @@ export default observer(function ProfileActivities() {
   }, [loadUserActivities, profile]);
 
   const handleTabChange = (e: SyntheticEvent, data: TabProps) => {
-    console.log(
-      panes[data.activeIndex as number].pane.key as FilteringPredicate
-    );
     loadUserActivities(
       profile!.username,
       panes[data.activeIndex as number].pane.key as FilteringPredicate

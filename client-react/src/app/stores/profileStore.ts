@@ -220,7 +220,6 @@ export default class ProfileStore {
         username,
         predicate!
       );
-      console.log(activities);
       runInAction(() => {
         this.userActivities = activities;
       });

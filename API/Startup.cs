@@ -21,8 +21,6 @@ namespace API
       _config = config;
     }
 
-
-
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
@@ -52,6 +50,9 @@ namespace API
 
       app.UseRouting();
 
+      app.UseDefaultFiles();
+      app.UseStaticFiles();
+
       app.UseCors("CorsPolicy");
 
       app.UseAuthentication();
@@ -61,6 +62,7 @@ namespace API
       {
         endpoints.MapControllers();
         endpoints.MapHub<ChatHub>("/chat");
+        endpoints.MapFallbackToController("Index", "Fallback");
       });
     }
   }

@@ -13,9 +13,6 @@ import { Photo, Profile, UserActivity } from '../models/profile';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
 
-const sleep = (delay: number) =>
-  new Promise((resolve) => setTimeout(resolve, delay));
-
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 axios.interceptors.request.use((config) => {
@@ -29,7 +26,6 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(
   async (response) => {
     let res = response;
-    await sleep(1000);
     const pagination = response.headers['pagination'];
     if (pagination) {
       response.data = new PaginatedResult(

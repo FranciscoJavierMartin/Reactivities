@@ -20,7 +20,6 @@ export default function PrivateRoute({
   const {
     userStore: { isLoggedIn },
   } = useStore();
-  console.log(isLoggedIn);
   return (
     <Route
       {...rest}
