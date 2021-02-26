@@ -637,3 +637,7 @@ else
   });
 }
 ```
+
+With a minimun effort, I got an A rating at https://securityheaders.com/
+
+![rating on security](./Security-header-rating.png)
