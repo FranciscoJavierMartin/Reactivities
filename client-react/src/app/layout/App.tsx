@@ -35,7 +35,7 @@ export default observer(function App(): JSX.Element {
     if (commonStore.token) {
       userStore.getUser().finally(() => commonStore.setAppLoaded());
     } else {
-      commonStore.setAppLoaded();
+      userStore.getFacebookLoginStatus().then(() => commonStore.setAppLoaded());
     }
   }, [commonStore, userStore]);
 

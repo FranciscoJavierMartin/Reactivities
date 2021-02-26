@@ -1,7 +1,14 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Header, Segment, Image, Button } from 'semantic-ui-react';
+import {
+  Container,
+  Header,
+  Segment,
+  Image,
+  Button,
+  Divider,
+} from 'semantic-ui-react';
 import { ACTIVITIES_PAGE_ROUTE } from '../../app/constants/routes';
 import { useStore } from '../../app/stores/store';
 import LoginForm from '../users/LoginForm';
@@ -44,6 +51,17 @@ export default observer(function HomePage(): JSX.Element {
             >
               Register!
             </Button>
+            <Divider horizontal inverted>
+              Or
+            </Divider>
+            <Button
+              loading={userStore.fbLoading}
+              size='huge'
+              inverted
+              color='facebook'
+              content='Login with Facebook'
+              onClick={userStore.facebookLogin}
+            />
           </>
         )}
       </Container>

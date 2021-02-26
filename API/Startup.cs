@@ -47,14 +47,26 @@ namespace API
       app.UseCsp(opt => opt
         .BlockAllMixedContent()
         .StyleSources(s => s.Self()
-          .CustomSources("https://fonts.googleapis.com"))
+          .CustomSources(
+            "https://fonts.googleapis.com",
+            "sha256-/epqQuRElKW1Z83z1Sg8Bs2MKi99Nrq41Z3fnS2Nrgk=",
+            "sha256-2aahydUs+he2AO0g7YZuG67RGvfE9VXGbycVgIwMnBI="
+          ))
         .FontSources(s => s.Self()
           .CustomSources("https://fonts.gstatic.com", "data:"))
         .FormActions(s => s.Self())
         .FrameAncestors(s => s.Self())
-        .ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com"))
+        .ImageSources(s => s.Self().CustomSources(
+          "https://res.cloudinary.com",
+          "https://www.facebook.com",
+          "https://platform-lookaside.fbsbx.com"
+        ))
         .ScriptSources(s => s.Self()
-          .CustomSources("sha256-ma5XxS1EBgt17N22Qq31rOxxRWRfzUTQS1KOtfYwuNo="))
+          .CustomSources(
+            "sha256-ma5XxS1EBgt17N22Qq31rOxxRWRfzUTQS1KOtfYwuNo=",
+            "https://connect.facebook.net",
+            "sha256-9/w7jvgjQw+D8m+9ldkAdMiCh4jAt6zdjD6Zig27Prs="
+          ))
       );
 
       if (env.IsDevelopment())

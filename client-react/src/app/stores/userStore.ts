@@ -1,11 +1,14 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { history } from '../..';
 import agent from '../api/agent';
+import { ACTIVITIES_PAGE_ROUTE } from '../constants/routes';
 import { User, UserFormValues } from '../models/user';
 import { store } from './store';
 
 export default class UserStore {
   user: User | null = null;
+  fbAccessToken: string | null = null;
+  fbLoading: boolean = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -62,8 +65,45 @@ export default class UserStore {
   };
 
   setDisplayName = (name: string) => {
-    if(this.user){
+    if (this.user) {
       this.user.displayName = name;
     }
-  }
+  };
+
+  getFacebookLoginStatus = async () => {
+    window.FB.getLoginStatus((response) => {
+      if (response.status === 'connected') {
+        this.fbAccessToken = response.authResponse.accessToken;
+      }
+    });
+  };
+
+  facebookLogin = () => {
+    this.fbLoading = true;
+    const apiLogin = (accessToken: string) => {
+      agent.Account.fbLogin(accessToken)
+        .then((user) => {
+          store.commonStore.setToken(user.token);
+          runInAction(() => {
+            this.user = user;
+          });
+          history.push(ACTIVITIES_PAGE_ROUTE);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => (this.fbLoading = false));
+    };
+
+    if (this.fbAccessToken) {
+      apiLogin(this.fbAccessToken);
+    } else {
+      window.FB.login(
+        (response) => {
+          apiLogin(response.authResponse.accessToken);
+        },
+        { scope: 'public_profile,email' }
+      );
+    }
+  };
 }
