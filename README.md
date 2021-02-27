@@ -759,3 +759,12 @@ Add a new migration
 ```bash
 dotnet ef migrations add RefreshTokens -p Persistence -s API
 ```
+
+## Email verification
+
+Install SendGrid package on Infrastructure project
+
+```bash
+cd Infrastructure
+nuget install SendGrid
+```

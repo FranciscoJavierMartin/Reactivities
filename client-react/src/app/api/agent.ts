@@ -59,7 +59,7 @@ axios.interceptors.response.use(
         break;
       case 401:
         if (
-          headers['www-authenticate'].startsWith('Bearer error="invalid_token"')
+          headers['www-authenticate']?.startsWith('Bearer error="invalid_token"')
         ) {
           store.userStore.logout();
           toast.error('Session expired - please login again');
@@ -109,6 +109,10 @@ const Account = {
   register: (user: UserFormValues) =>
     request.post<User>('account/register', user),
   refreshToken: () => request.post<User>(`account/refreshToken`, {}),
+  verifyEmail: (token: string, email: string) =>
+    request.post<void>(`account/verifyEmail?token=${token}&email=${email}`, {}),
+  resendEmailConfirm: (email: string) =>
+    request.get(`account/resendEmailConfirmationLink?email=${email}`),
 };
 
 const Profiles = {

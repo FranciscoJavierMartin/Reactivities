@@ -14,7 +14,7 @@ export default observer(function LoginForm(): JSX.Element {
       onSubmit={(values, { setErrors }) =>
         userStore.login(values).catch((error) =>
           setErrors({
-            error: 'Invalid email or password',
+            error: error.response.data,
           })
         )
       }

@@ -15,6 +15,8 @@ import {
   ERRORS_PAGE_ROUTE,
   SERVER_ERROR_PAGE_ROUTE,
   PROFILE_PAGE_ROUTE,
+  ACCOUNT_REGISTER_SUCCESS_PAGE_ROUTE,
+  ACCOUNT_VERIFY_EMAIL_PAGE_ROUTE,
 } from '../constants/routes';
 import ActivityForm from '../../features/activities/form/ActivityForm';
 import ActivityDetails from '../../features/activities/details/ActivityDetails';
@@ -26,6 +28,8 @@ import LoadingComponent from './LoadingComponent';
 import ModalContainer from '../common/modals/ModalContainer';
 import ProfilePage from '../../features/profiles/ProfilePage';
 import PrivateRoute from './PrivateRoute';
+import RegisterSuccess from '../../features/users/RegisterSuccess';
+import ConfirmEmail from '../../features/users/ConfirmEmail';
 
 export default observer(function App(): JSX.Element {
   const location = useLocation();
@@ -80,6 +84,14 @@ export default observer(function App(): JSX.Element {
                 <Route
                   path={SERVER_ERROR_PAGE_ROUTE}
                   component={ServerErrorPage}
+                />
+                <Route
+                  path={ACCOUNT_REGISTER_SUCCESS_PAGE_ROUTE}
+                  component={RegisterSuccess}
+                />
+                <Route
+                  path={ACCOUNT_VERIFY_EMAIL_PAGE_ROUTE}
+                  component={ConfirmEmail}
                 />
                 <Route component={NotFoundPage} />
               </Switch>
