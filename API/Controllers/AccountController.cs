@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -5,13 +6,14 @@ using API.DTOs;
 using API.Services;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-  [AllowAnonymous]
+
   [ApiController]
   [Route("api/[controller]")]
   public class AccountController : ControllerBase
@@ -29,6 +31,8 @@ namespace API.Controllers
       _userManager = userManager;
     }
 
+
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
@@ -56,6 +60,7 @@ namespace API.Controllers
       return res;
     }
 
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
@@ -83,6 +88,7 @@ namespace API.Controllers
 
         if (result.Succeeded)
         {
+          await SetRefreshToken(user);
           res = CreateUserObject(user);
         }
         else
@@ -100,6 +106,52 @@ namespace API.Controllers
       var user = await _userManager.Users.Include(p => p.Photos)
         .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
       return CreateUserObject(user);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("refreshToken")]
+    public async Task<ActionResult<UserDto>> RefreshToken()
+    {
+      ActionResult<UserDto> res;
+      var refreshToken = Request.Cookies["refreshToken"];
+      var user = await _userManager.Users
+        .Include(r => r.RefreshTokens)
+        .Include(p => p.Photos)
+        .FirstOrDefaultAsync(x => x.UserName == User.FindFirstValue(ClaimTypes.Name));
+
+      if (user == null)
+      {
+        res = Unauthorized();
+      }
+      else
+      {
+        var oldToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken);
+
+        if (oldToken != null && !oldToken.IsActive)
+        {
+          res = Unauthorized();
+        }
+        else
+        {
+          res = CreateUserObject(user);
+        }
+      }
+
+      return res;
+    }
+
+    private async Task SetRefreshToken(AppUser user)
+    {
+      var refreshToken = _tokenService.GenerateRefreshToken();
+      user.RefreshTokens.Add(refreshToken);
+      await _userManager.UpdateAsync(user);
+      var cookieOptions = new CookieOptions
+      {
+        HttpOnly = true,
+        Expires = DateTime.UtcNow.AddDays(7),
+      };
+
+      Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
     }
 
     private UserDto CreateUserObject(AppUser user)
