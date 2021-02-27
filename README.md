@@ -641,3 +641,121 @@ else
 With a minimun effort, I got an A rating at https://securityheaders.com/
 
 ![rating on security](./Security-header-rating.png)
+
+## Auto refresh token
+
+Add a new endpoint to refresh token
+
+```csharp
+// AccountController.cs
+[HttpPost("refreshToken")]
+public async Task<ActionResult<UserDto>> RefreshToken()
+{
+  ActionResult<UserDto> res;
+  var refreshToken = Request.Cookies["refreshToken"];
+  var user = await _userManager.Users
+    .Include(r => r.RefreshTokens)
+    .Include(p => p.Photos)
+    .FirstOrDefaultAsync(x => x.UserName == User.FindFirstValue(ClaimTypes.Name));
+
+  if (user == null)
+  {
+    res = Unauthorized();
+  } else {
+    var oldToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken);
+
+    if (oldToken != null && !oldToken.IsActive)
+    {
+      res = Unauthorized();
+    } else {
+      res = CreateUserObject(user);
+    }
+  }
+
+  return res;
+}
+
+private async Task SetRefreshToken(AppUser user)
+{
+  var refreshToken = _tokenService.GenerateRefreshToken();
+  user.RefreshTokens.Add(refreshToken);
+  await _userManager.UpdateAsync(user);
+  var cookieOptions = new CookieOptions
+  {
+    HttpOnly = true,
+    Expires = DateTime.UtcNow.AddDays(7),
+  };
+
+  Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+}
+```
+
+Add this line to allow new headers
+
+```csharp
+opt.AddPolicy("CorsPolicy", policy =>
+{
+  policy.AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .WithExposedHeaders("WWW-Authenticate", "Pagination") // Add this line to allow both headers
+    .WithOrigins(new string[3] { "http://localhost:3000", "http://localhost:3001", "http://localhost:4200" });
+});
+```
+
+Validate lifetime token
+
+```csharp
+// IdentityServiceExtensions.cs
+opt.TokenValidationParameters = new TokenValidationParameters
+{
+  // Other parameters
+  // Add these new lines to validate token lifetime
+  ValidateLifetime = true,
+  ClockSkew = TimeSpan.Zero
+};
+```
+
+Added method to refresh token
+
+```csharp
+// TokenService.cs
+public RefreshToken GenerateRefreshToken()
+{
+  var randomNumber = new byte[32];
+  using var rng = RandomNumberGenerator.Create();
+  rng.GetBytes(randomNumber);
+  return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
+}
+
+// Add this new param when create SecurityTokenDescriptor
+Expires = DateTime.Now.AddMinutes(10),
+```
+
+Add this attribute to AppUser entity
+
+```csharp
+// AppUser.cs
+public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+```
+
+Add a new entity
+
+```csharp
+public class RefreshToken
+{
+  public int Id { get; set; }
+  public AppUser AppUser { get; set; }
+  public string Token { get; set; }
+  public DateTime Expires { get; set; } = DateTime.UtcNow.AddDays(7);
+  public bool IsExpired => DateTime.UtcNow >= Expires;
+  public DateTime? Revoked { get; set; }
+  public bool IsActive => Revoked == null && !IsExpired;
+}
+```
+
+Add a new migration
+
+```bash
+dotnet ef migrations add RefreshTokens -p Persistence -s API
+```
